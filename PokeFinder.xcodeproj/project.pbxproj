@@ -12,6 +12,7 @@
 		AABBD4751DA581D0008E8A3D /* GFGeoHash.m in Sources */ = {isa = PBXBuildFile; fileRef = AABBD46E1DA581D0008E8A3D /* GFGeoHash.m */; };
 		AABBD4761DA581D0008E8A3D /* GFGeoHashQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = AABBD4701DA581D0008E8A3D /* GFGeoHashQuery.m */; };
 		AABBD4771DA581D0008E8A3D /* GFQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = AABBD4721DA581D0008E8A3D /* GFQuery.m */; };
+		AABBD47F1DA58B7E008E8A3D /* PokeAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = AABBD47E1DA58B7E008E8A3D /* PokeAnnotation.swift */; };
 		AAF0F40D1DA55B320051A224 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF0F40C1DA55B320051A224 /* AppDelegate.swift */; };
 		AAF0F40F1DA55B320051A224 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF0F40E1DA55B320051A224 /* ViewController.swift */; };
 		AAF0F4121DA55B320051A224 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AAF0F4101DA55B320051A224 /* Main.storyboard */; };
@@ -40,6 +41,7 @@
 		AABBD4711DA581D0008E8A3D /* GFQuery+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "GFQuery+Private.h"; sourceTree = "<group>"; };
 		AABBD4721DA581D0008E8A3D /* GFQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GFQuery.m; sourceTree = "<group>"; };
 		AABBD47B1DA5832B008E8A3D /* PokeFinder-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "PokeFinder-Bridging-Header.h"; sourceTree = "<group>"; };
+		AABBD47E1DA58B7E008E8A3D /* PokeAnnotation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PokeAnnotation.swift; sourceTree = "<group>"; };
 		AAF0F4091DA55B320051A224 /* PokeFinder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PokeFinder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AAF0F40C1DA55B320051A224 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AAF0F40E1DA55B320051A224 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -109,6 +111,22 @@
 			path = Implementation;
 			sourceTree = "<group>";
 		};
+		AABBD47C1DA5894F008E8A3D /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				AABBD47E1DA58B7E008E8A3D /* PokeAnnotation.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		AABBD47D1DA589BB008E8A3D /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				AAF0F40E1DA55B320051A224 /* ViewController.swift */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
 		AAF0F4001DA55B320051A224 = {
 			isa = PBXGroup;
 			children = (
@@ -130,15 +148,16 @@
 		AAF0F40B1DA55B320051A224 /* PokeFinder */ = {
 			isa = PBXGroup;
 			children = (
+				AABBD47C1DA5894F008E8A3D /* Model */,
+				AABBD47D1DA589BB008E8A3D /* Controller */,
 				AABBD4611DA581D0008E8A3D /* GeoFire */,
 				AAF0F40C1DA55B320051A224 /* AppDelegate.swift */,
-				AAF0F40E1DA55B320051A224 /* ViewController.swift */,
-				AAF0F4101DA55B320051A224 /* Main.storyboard */,
-				AAF0F4131DA55B320051A224 /* Assets.xcassets */,
-				AAF0F4151DA55B320051A224 /* LaunchScreen.storyboard */,
+				AABBD47B1DA5832B008E8A3D /* PokeFinder-Bridging-Header.h */,
 				AAF0F41E1DA580400051A224 /* GoogleService-Info.plist */,
 				AAF0F4181DA55B320051A224 /* Info.plist */,
-				AABBD47B1DA5832B008E8A3D /* PokeFinder-Bridging-Header.h */,
+				AAF0F4131DA55B320051A224 /* Assets.xcassets */,
+				AAF0F4151DA55B320051A224 /* LaunchScreen.storyboard */,
+				AAF0F4101DA55B320051A224 /* Main.storyboard */,
 			);
 			path = PokeFinder;
 			sourceTree = "<group>";
@@ -278,6 +297,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AABBD4741DA581D0008E8A3D /* GFBase32Utils.m in Sources */,
+				AABBD47F1DA58B7E008E8A3D /* PokeAnnotation.swift in Sources */,
 				AAF0F40F1DA55B320051A224 /* ViewController.swift in Sources */,
 				AABBD4751DA581D0008E8A3D /* GFGeoHash.m in Sources */,
 				AAF0F40D1DA55B320051A224 /* AppDelegate.swift in Sources */,
