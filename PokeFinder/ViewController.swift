@@ -2,7 +2,7 @@
 //  ViewController.swift
 //  PokeFinder
 //
-//  Created by Sandro Simes on 05/10/2016.
+//  Created by smbss on 05/10/2016.
 //  Copyright © 2016 smbss. All rights reserved.
 //
 
@@ -16,6 +16,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     let locationManager = CLLocationManager()
         // Bool to know when to center the map
     var mapHasCenteredOnce = false
+    var geoFire: GeoFire!
     
     override func viewDidLoad() {
         super.viewDidLoad()

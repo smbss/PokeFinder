@@ -2,11 +2,12 @@
 //  AppDelegate.swift
 //  PokeFinder
 //
-//  Created by Sandro Simes on 05/10/2016.
+//  Created by smbss on 05/10/2016.
 //  Copyright © 2016 smbss. All rights reserved.
 //
 
 import UIKit
+import Firebase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,6 +17,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        FIRApp.configure()
+        
         return true
     }
 
