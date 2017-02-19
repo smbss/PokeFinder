@@ -29,7 +29,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         mapView.userTrackingMode = MKUserTrackingMode.follow
         mapView.mapType = MKMapType.hybrid
         
-            // Creating the reference for the Firebase Reference
+            // Creating the Firebase Reference
         geoFireRef = FIRDatabase.database().reference()
             // Initializing GeoFire with that reference
         geoFire = GeoFire(firebaseRef: geoFireRef)
@@ -81,12 +81,39 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
         // Creating the sprite for the user location
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+            // Whenever mapView.addAnnotation() is called, this will be executed
+            // This is where the annotation is customized
         
+        let annoIdentifier = "Pokemon"
         var annotationView: MKAnnotationView?
         
         if annotation.isKind(of: MKUserLocation.self) {
+                // Creating user location sprite
             annotationView = MKAnnotationView(annotation: annotation, reuseIdentifier: "User")
             annotationView?.image = UIImage(named: "ash")
+        } else if let deqAnno = mapView.dequeueReusableAnnotationView(withIdentifier: annoIdentifier) {
+                // Reusing annotations
+            annotationView = deqAnno
+            annotationView?.annotation = annotation
+        } else {
+                // Creating a new annotation if we can't deque one
+            let av = MKAnnotationView(annotation: annotation, reuseIdentifier: annoIdentifier)
+            av.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
+            annotationView = av
+        }
+        
+            // Customizing the annotation
+            // Making sure that annotationView is not nil and anno is a PokeAnnotation
+        if let annotationView = annotationView, let anno = annotation as? PokeAnnotation {
+            
+                // Making the annotation display a callout [!] The annotation needs to have a title
+            annotationView.canShowCallout = true
+            annotationView.image = UIImage(named: "\(anno.pokemonNumber)")
+                // Creating the little button for the map
+            let btn = UIButton()
+            btn.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
+            btn.setImage(UIImage(named: "map"), for: .normal)
+            annotationView.rightCalloutAccessoryView = btn
         }
         
         return annotationView
@@ -113,6 +140,38 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             }
             
         })
+    }
+    
+        // Updating the mapView when the region changes
+    func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
+        
+        let loc = CLLocation(latitude: mapView.centerCoordinate.latitude, longitude: mapView.centerCoordinate.longitude)
+        
+        showSightingsOnMap(location: loc)
+    }
+    
+        // Acting when the map callout button is pressed
+    func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+        
+        if let anno = view.annotation as? PokeAnnotation {
+                // Create a place for the Apple map
+            var place: MKPlacemark!
+            if #available(iOS 10.0, *) {
+                place = MKPlacemark(coordinate: anno.coordinate)
+            } else {
+                place = MKPlacemark(coordinate: anno.coordinate, addressDictionary: nil)
+            }
+            let destination = MKMapItem(placemark: place)
+            destination.name = "Pokemon Sighting"
+            let regionDistance: CLLocationDistance = 1000
+            let regionSpan = MKCoordinateRegionMakeWithDistance(anno.coordinate, regionDistance, regionDistance)
+            
+                // Configuring options like center, span and directions method (walking, driving...)
+            let options = [MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: regionSpan.center), MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: regionSpan.span), MKLaunchOptionsDirectionsModeKey: MKLaunchOptionsDirectionsModeDriving] as [String : Any]
+            
+            MKMapItem.openMaps(with: [destination], launchOptions: options)
+        }
+        
     }
     
     @IBAction func spotRandomPokemon(_ sender: UIButton) {
