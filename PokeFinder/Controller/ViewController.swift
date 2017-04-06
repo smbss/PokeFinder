@@ -13,16 +13,21 @@ import FirebaseDatabase
 class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
-    
-    let locationManager = CLLocationManager()
+
         // Bool to know when to center the map
     var mapHasCenteredOnce = false
         // Initializing GeoFire element - With Geofire is easy to retrieve sorrounding location data
     var geoFire: GeoFire!
     var geoFireRef: FIRDatabaseReference!
     
+    var locationManager: CLLocationManager!
+    var selectedPkmn: Pokemon?
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        locationManager = CLLocationManager()
+        locationManager.delegate = self
+        
         mapView.delegate = self
         
             // Setting the mapView to track the user
@@ -35,25 +40,29 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         geoFire = GeoFire(firebaseRef: geoFireRef)
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-            // This will run everytime the view appears
+    override func viewWillAppear(_ animated: Bool) {
         
-        locationAuthStatus()
-    }
-    
-        // Checking if the user already gave permission to access location
-    func locationAuthStatus() {
-        if CLLocationManager.authorizationStatus() == .authorizedWhenInUse {
-            mapView.showsUserLocation = true
-        } else {
-            locationManager.requestWhenInUseAuthorization()
+        guard selectedPkmn?.pokedexId == nil else {
+            let loc = CLLocation(latitude: mapView.centerCoordinate.latitude, longitude: mapView.centerCoordinate.longitude)
+            createSighting(forLocation: loc, withPokemon: (selectedPkmn?.pokedexId)!)
+            return
         }
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         
-        if status == CLAuthorizationStatus.authorizedWhenInUse {
+            // Runs when CLLocationManager is instanciated (viewDidLoad)
+        switch status {
+        case .notDetermined:
+            manager.requestWhenInUseAuthorization()
+            break
+        case .authorizedWhenInUse:
             mapView.showsUserLocation = true
+            break
+        default:
+                // Other cases: .denied .restricted and .authorizedAlways
+                // Not relevant to deal with .authorizedAlways because we won't ask it in this app
+            showAlert(title: "Location not found", message: "Please authorize access to your location in order to use the app", buttonText: "Ok")
         }
         
     }
@@ -108,7 +117,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             
                 // Making the annotation display a callout [!] The annotation needs to have a title
             annotationView.canShowCallout = true
-            annotationView.image = UIImage(named: "\(anno.pokemonNumber)")
+            annotationView.image = anno.pokemonImage
                 // Creating the little button for the map
             let btn = UIButton()
             btn.frame = CGRect(x: 0, y: 0, width: 30, height: 30)
@@ -120,7 +129,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     }
     
     func createSighting(forLocation location: CLLocation, withPokemon pokeId: Int) {
-        
         geoFire.setLocation(location, forKey: "\(pokeId)")
     }
     
@@ -134,7 +142,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             
                 // Making sure that key and location exist
             if let key = key, let location = location {
-                let anno = PokeAnnotation(coordinate: location.coordinate, pokemonNumber: Int(key)!)
+                let pkmn = Pokemon(pokedexId: Int(key)!)
+                let anno = PokeAnnotation(coordinate: location.coordinate, pokemon: pkmn)
                     // Adding that annotation to the mapView
                 self.mapView.addAnnotation(anno)
             }
@@ -144,9 +153,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
         // Updating the mapView when the region changes
     func mapView(_ mapView: MKMapView, regionWillChangeAnimated animated: Bool) {
-        
         let loc = CLLocation(latitude: mapView.centerCoordinate.latitude, longitude: mapView.centerCoordinate.longitude)
-        
         showSightingsOnMap(location: loc)
     }
     
@@ -174,15 +181,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         
     }
     
-    @IBAction func spotRandomPokemon(_ sender: UIButton) {
-        
-        let loc = CLLocation(latitude: mapView.centerCoordinate.latitude, longitude: mapView.centerCoordinate.longitude)
-        
-            // Choosing a random pokemon
-        let rand = arc4random_uniform(151) + 1
-            // (upper boundary) + lower boundary
-        createSighting(forLocation: loc, withPokemon: Int(rand))
+    func showAlert(title: String, message: String, buttonText: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: buttonText, style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
     
 }
-
